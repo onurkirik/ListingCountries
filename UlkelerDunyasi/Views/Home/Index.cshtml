@@ -1,0 +1,96 @@
+﻿@model List<Ulke> 
+@{
+    ViewData["Title"] = "Home Page";
+    string mesaj = (string)TempData["Mesaj"]!;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Listing Countries</h1>
+</div>
+
+<button data-id="0" data-ad="0" type="button" class="btn btn-primary addNew-country" data-bs-toggle="modal" data-bs-target="#ulkeModal">
+    Yeni Ülke
+</button>
+
+<table class="table table-hover">
+    <thead>
+    <th>Id</th>
+    <th>Ulke</th>
+    <th></th>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Ad</td>
+                <td class="text-end">
+                    <button data-id="@item.Id" data-ad="@item.Ad" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ulkeModal">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button onclick="sil(@item.Id, '@item.Ad')" data-sil-id="@item.Id" class="btn btn-danger">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<form asp-controller="Home" asp-action="UlkeKaydet">
+    <input type="hidden" name="id" value="0" id ="id" />
+    <div class="modal fade" id="ulkeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ülke</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Ad</label>
+                        <input type="text" class="form-control" id="ad" name="ad" required maxlength="100">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formSil" asp-asp-controller="Home" asp-action="UlkeSil">
+    <input type="hidden" name="id" id="silId" value="" />
+    <input type="hidden" name="ad" id="silAd" value="" />
+</form>
+
+
+@section Scripts{   
+    <script>
+
+        const ulkeModal = document.getElementById('ulkeModal');
+        ulkeModal.addEventListener("show.bs.modal", event =>{
+            const btn = event.relatedTarget;
+            const id = btn.getAttribute("data-id");
+            const ad = btn.getAttribute("data-ad");
+            document.getElementById("id").value= id;
+            document.getElementById("ad").value = ad;
+        });
+
+        let mesaj = "@mesaj";
+
+        if (mesaj) {
+            mesajGoster(mesaj);
+        }
+
+        function sil(id, ad){
+            document.getElementById("silId").value = id;
+            document.getElementById("silAd").value = ad;
+            document.getElementById("formSil").submit();
+        }
+
+    </script>
+}
